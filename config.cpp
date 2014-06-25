@@ -1,5 +1,12 @@
 #include "config.h"
+#ifndef USE_SDL2
 #include <SDL/SDL.h>
+#define SDL_INIT_HAPTIC 0
+#define SDL_Haptic void
+#else
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_haptic.h>
+#endif
 
 //global gamepad struct
 SGamepadData gamepad;
