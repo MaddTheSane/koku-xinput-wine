@@ -20,15 +20,22 @@
 using namespace std;
 
 bool active = true;
-struct Sgamepad_sdl
+class Sgamepad_sdl
 {
+public:
+	Sgamepad_sdl()
+	{
+		joystick = nullptr;
+		haptic = nullptr;
+		memset(haptic_effects, 0, sizeof(haptic_effects));
+	}
 	SDL_Joystick *joystick;
 	SDL_Haptic   *haptic;
 	int           haptic_effects[2];
 };
 static vector<Sgamepad_sdl> gamepads_sdl;
 
-GUID GUID_NULL = {0,0,0,{0,0,0,0,0,0,0,0}};
+const GUID GUID_NULL = {0,0,0,{0,0,0,0,0,0,0,0}};
 
 void GamepadInitSDL()
 {
@@ -47,11 +54,11 @@ void GamepadInitSDL()
 		SDL_Joystick* joy = SDL_JoystickOpen(i);
 		if (joy)
 		{
-			Sgamepad_sdl new_gamepad;
+			Sgamepad_sdl new_gamepad = Sgamepad_sdl();
 			new_gamepad.joystick = joy;
 			new_gamepad.haptic = 0;
 			//check for haptic
-			#ifdef USE_SDL2
+#ifdef USE_SDL2
 			new_gamepad.haptic = SDL_HapticOpenFromJoystick(new_gamepad.joystick);
 			if (new_gamepad.haptic != 0)
 			{
@@ -76,7 +83,7 @@ void GamepadInitSDL()
 				SDL_HapticRunEffect(new_gamepad.haptic, new_gamepad.haptic_effects[0], 1);
 				SDL_HapticRunEffect(new_gamepad.haptic, new_gamepad.haptic_effects[1], 1);
 			}
-			#endif
+#endif
 			gamepads_sdl.push_back(new_gamepad);
 		}
 	}
@@ -504,7 +511,7 @@ unsigned WINAPI XInputSetState(unsigned dwUserIndex, XINPUT_VIBRATION *pVibratio
 	if (active)
 	{
 		//Sorry no vibration in SDL1.2, maybe SDL2
-		#ifdef USE_SDL2
+#ifdef USE_SDL2
 		if (gamepads_sdl[dwUserIndex].haptic != 0)
 		{
 			SDL_HapticEffect effect[2];
@@ -524,7 +531,7 @@ unsigned WINAPI XInputSetState(unsigned dwUserIndex, XINPUT_VIBRATION *pVibratio
 			SDL_HapticUpdateEffect(gamepads_sdl[dwUserIndex].haptic, gamepads_sdl[dwUserIndex].haptic_effects[0], &(effect[0]));
 			SDL_HapticUpdateEffect(gamepads_sdl[dwUserIndex].haptic, gamepads_sdl[dwUserIndex].haptic_effects[1], &(effect[1]));
 		}
-		#endif
+#endif
 	}
 	return ERROR_SUCCESS;
 }

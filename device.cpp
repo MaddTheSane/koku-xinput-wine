@@ -16,7 +16,7 @@ const short wine_gamepad[] = {'V','I','D','_','3','E','D','9','&',
 
 //what this does ? well.. hard to explain, please don't mind as long as it works
 long CoSetProxyBlanket_addr = 0;
-char  CoSetProxyBlanket_hook[sizeof(Sjmp)];
+char CoSetProxyBlanket_hook[sizeof(Sjmp)];
 long CreateInstanceEnum_addr = 0;
 long CreateInstanceEnum_original;
 long Next_addr = 0;
